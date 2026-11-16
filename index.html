@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#020813">
+<meta name="description" content="Stark Industries Mark LXXXV conversational AI and tactical armor HUD.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>J.A.R.V.I.S. // MK-LXXXV COGNITIVE HUD</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+<link rel="stylesheet" href="css/hud.css">
+</head>
+<body>
+
+<header>
+  <div class="brand-wrap">
+    <div class="stark-badge">SI</div>
+    <div>
+      <div class="brand">J.A.R.V.I.S.</div>
+      <div class="sub">MK-LXXXV // COGNITIVE &amp; TACTICAL OS</div>
+    </div>
+  </div>
+  <div class="status-group">
+    <button id="wakeToggle" class="secondary" title="Continuous 'Hey Jarvis' Wake-Word Loop">WAKE: OFF</button>
+    <button id="audioUnlock" class="secondary" title="Toggle HUD Sound Effects">SFX: OFF</button>
+    <div class="pill" id="status">ONLINE</div>
+  </div>
+</header>
+
+<main>
+  <!-- CORE + ARMOR INTEGRITY WIREFRAME -->
+  <section class="hud-panel">
+    <div class="section-header">
+      <span class="section-title">ARC CORE &amp; MARK LXXXV SUIT INTEGRITY</span>
+      <span class="section-code" id="sysCoords">GPS: STANDBY</span>
+    </div>
+
+    <div class="visual-stage">
+      <div class="core-box">
+        <canvas id="reactorCanvas" width="400" height="400" title="Tap to Speak"></canvas>
+        <div class="stage-caption" id="coreStateLabel">NEURAL CORE: NOMINAL</div>
+      </div>
+
+      <div class="armor-box">
+        <canvas id="armorCanvas" width="400" height="400" title="Tap Armor to Run Structural Scan"></canvas>
+        <div class="stage-caption" id="armorOverallLabel">ARMOR PLATING: 100%</div>
+        <div class="armor-bars" id="armorBars"></div>
+      </div>
+    </div>
+
+    <h1 id="greeting">ALL SYSTEMS OPERATIONAL, SIR.</h1>
+    <div class="telemetry-sub" id="clock">SYNCHRONIZING CHRONOMETER…</div>
+
+    <div class="stats">
+      <div class="tile"><b>CHRONOMETER</b><span id="timeStat">--:--:--</span></div>
+      <div class="tile"><b>POWER CELL</b><span id="batteryStat">SCANNING…</span></div>
+      <div class="tile"><b>NEURAL IQ</b><span id="brainStat">LOCAL-HYBRID</span></div>
+      <div class="tile"><b>PROTOCOL</b><span id="modeStat">STANDARD</span></div>
+    </div>
+
+    <div class="protocol-bar">
+      <button class="proto-btn active" data-proto="standard">STANDARD</button>
+      <button class="proto-btn" data-proto="workshop">WORKSHOP</button>
+      <button class="proto-btn" data-proto="combat">COMBAT</button>
+      <button class="proto-btn" data-proto="stealth">STEALTH</button>
+    </div>
+  </section>
+
+  <!-- CONVERSATIONAL AI & COMMAND CONSOLE -->
+  <section class="hud-panel">
+    <div class="section-header">
+      <span class="section-title">COGNITIVE DIALOGUE &amp; SYSTEM EXECUTION</span>
+      <span class="section-code" id="contextCounter">MEMORY: 0 TURNS</span>
+    </div>
+    <div class="row">
+      <input id="command" placeholder="Converse with J.A.R.V.I.S. or issue a directive, Sir…" autocomplete="off">
+      <button id="send" class="tactical">EXEC</button>
+      <button id="mic" class="secondary" style="min-width:46px;font-size:1rem;" aria-label="Voice Input">🎙</button>
+    </div>
+    <div class="chip-row">
+      <button class="chip" data-cmd="Run full system diagnostics">Diagnostics</button>
+      <button class="chip" data-cmd="Scan suit integrity">Suit Integrity</button>
+      <button class="chip" data-cmd="Simulate combat damage">Simulate Damage</button>
+      <button class="chip" data-cmd="Repair armor plating">Repair Armor</button>
+      <button class="chip" data-cmd="Convert 120 miles to km">120 mi → km</button>
+      <button class="chip" data-cmd="Tell me something intelligent">Briefing</button>
+    </div>
+    <div class="terminal-log" id="terminalLog" aria-live="polite">
+      <div class="log-entry"><span class="log-tag-ai">[J.A.R.V.I.S.]</span>Good day, Sir. Mark LXXXV cognitive core and armor telemetry are online. How may I assist you?</div>
+    </div>
+  </section>
+
+  <!-- LOGS & CHRONO / NEURAL API -->
+  <div class="grid-2">
+    <section class="hud-panel">
+      <div class="section-header">
+        <span class="section-title">ENCRYPTED FIELD LOGS</span>
+        <span class="section-code" id="noteCount">0 ENTRIES</span>
+      </div>
+      <div class="row">
+        <input id="noteInput" placeholder="Log tactical note or reminder…">
+        <button id="saveNote" class="tactical">LOG</button>
+      </div>
+      <div id="notes"></div>
+    </section>
+
+    <section class="hud-panel">
+      <div class="section-header">
+        <span class="section-title">SENSORS &amp; CLOUD NEURAL UPLINK</span>
+        <span class="section-code" id="gyroStat">GYRO: STANDBY</span>
+      </div>
+      <div id="reminders" class="small">No active countdown directives.</div>
+      <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap;">
+        <button id="btnGeo" class="secondary">GPS LOCK</button>
+        <button id="btnWakeLock" class="secondary">KEEP AWAKE</button>
+        <button id="btnCopyLast" class="secondary">COPY LOG</button>
+      </div>
+      <div style="margin-top:10px;">
+        <div class="small" style="margin-bottom:4px;">OPTIONAL LLM API KEY (OPENAI-COMPATIBLE):</div>
+        <div class="row">
+          <input id="apiKeyInput" type="password" autocomplete="off" placeholder="sk-… or AIza… (optional)">
+          <button id="saveApiKey" class="secondary">LINK</button>
+        </div>
+        <div class="api-grid">
+          <input id="apiBaseInput" aria-label="API base URL" placeholder="https://api.openai.com/v1">
+          <input id="apiModelInput" aria-label="Model name" placeholder="gpt-4o">
+        </div>
+        <div class="small" style="margin:10px 0 4px;">WEB INTELLIGENCE (BRAVE SEARCH API KEY, OPTIONAL):</div>
+        <div class="row">
+          <input id="searchKeyInput" type="password" autocomplete="off" aria-label="Web search API key" placeholder="BSA… (enables live web lookups)">
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- INTERACTIVE COMMAND & CONVERSATION GUIDE -->
+  <section class="hud-panel">
+    <div class="section-header">
+      <span class="section-title">INTERACTIVE CAPABILITY MATRIX</span>
+      <span class="section-code">NATURAL LANGUAGE + TASKS</span>
+    </div>
+    <ul class="cmd-list">
+      <li><b>Conversational AI:</b> Ask "Who are you?", "How is the suit?", "Analyze tactical options", "Tell me a joke", "What is the speed of light?", "Flip a coin", "Roll a d20", or chat naturally.</li>
+      <li><b>Armor Wireframe Tasks:</b> "Scan suit integrity", "Simulate combat damage", "Repair armor", "Check helmet status".</li>
+      <li><b>Protocols &amp; HUD:</b> "Engage combat protocol", "Stealth mode", "Workshop mode", "Standard mode", "Clear terminal".</li>
+      <li><b>Math &amp; Unit Conversions:</b> "Calculate (340 * 2.5) + 18", "Convert 88 mph to kmh", "Convert 37 c to f", "Convert 75 kg to lbs".</li>
+      <li><b>System &amp; Memory Tasks:</b> "Remind me in 3 minutes to check thrusters", "Log note Test repulsor output", "Read my notes", "Delete all notes", "Search Stark Industries".</li>
+    </ul>
+  </section>
+
+  <footer>STARK INDUSTRIES PROPRIETARY // J.A.R.V.I.S. COGNITIVE OS v85.9</footer>
+</main>
+
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "id": "./",
+  "name": "J.A.R.V.I.S. Tactical OS // MK-LXXXV",
+  "short_name": "J.A.R.V.I.S.",
+  "description": "Stark Industries Mark LXXXV conversational AI and tactical armor HUD.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#020813",
+  "theme_color": "#020813",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
